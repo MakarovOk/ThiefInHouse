@@ -1,25 +1,21 @@
-using System;
 using UnityEngine;
 
 namespace Enemy
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
-    public abstract class EnemyMoverBase : MonoBehaviour, IMover
+    public abstract class EnemyMoverBase : MonoBehaviour
     {
         [SerializeField] protected float _baseSpeed;
         [SerializeField] private bool _moveOnAwake;
         protected Rigidbody _rigidbody;
-        protected CapsuleCollider _capsuleCollider;
-        protected Vector3 _defaultPosition;
         protected Vector3 _moveDirection;
         public bool CanMove { get; private set; }
 
         protected virtual void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
-            _capsuleCollider = GetComponent<CapsuleCollider>();
-            _defaultPosition = transform.position;
+            GetComponent<CapsuleCollider>();
             _moveDirection = Vector3.zero;
             if(_moveOnAwake) HandleStateMoving(true);
         }
@@ -30,19 +26,11 @@ namespace Enemy
                 _rigidbody.velocity = transform.forward * _baseSpeed;
         }
         
-        public void HandleStateMoving(bool value)
+        private void HandleStateMoving(bool value)
         {
             _moveDirection = value ? Vector3.forward : Vector3.zero;
             CanMove = value;
             _rigidbody.velocity = _moveDirection * _baseSpeed;
         }
-
-        public void ResetPos()
-        {
-            transform.position = _defaultPosition;
-            CanMove = false;
-        }
-        
-        
     }
 }
